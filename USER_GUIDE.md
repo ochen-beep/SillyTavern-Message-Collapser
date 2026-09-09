@@ -6,7 +6,7 @@
 
 Message Collapser добавляет кнопку сворачивания в панель действий каждого сообщения SillyTavern — рядом с кнопками редактирования и копирования, а не отдельной «плавающей» стрелкой у пузыря чата. Свёрнутое сообщение скрывает текст целиком или показывает короткое превью, а выбранные состояния сохраняются между перезагрузками.
 
-Расширение — глубокая переработка [InspectorCaracal/Message_Collapser](https://github.com/InspectorCaracal/Message_Collapser).
+Расширение — переработка [InspectorCaracal/Message_Collapser](https://github.com/InspectorCaracal/Message_Collapser).
 
 ## Установка
 
