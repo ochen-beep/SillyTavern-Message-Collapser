@@ -35,6 +35,7 @@ export function syncSettingsUi(settings) {
     $('#mc_preview_lines').val(settings.previewLines ?? 2);
     applyPreviewLines(settings.previewLines);
 
+    $('#mc_auto_collapse_hidden').prop('checked', Boolean(settings.autoCollapseHidden));
     $('#mc_auto_collapse_by_length').prop('checked', Boolean(settings.autoCollapseByLength));
     $('#mc_length_threshold').val(settings.lengthThreshold ?? 1000);
 
@@ -70,6 +71,13 @@ function handlePreviewLinesChange(event) {
     const value = parseInt($(event.target).val());
     settings.previewLines = Number.isNaN(value) ? 2 : Math.max(1, Math.min(10, value));
     applyPreviewLines(settings.previewLines);
+    saveSettings();
+    onChatChanged();
+}
+
+function handleAutoCollapseHiddenChange(event) {
+    const settings = getSettings();
+    settings.autoCollapseHidden = Boolean($(event.target).prop('checked'));
     saveSettings();
     onChatChanged();
 }
@@ -113,6 +121,7 @@ function bindSettingsHandlers() {
     $('#mc_preview_mode').off('change' + ns).on('change' + ns, handlePreviewModeChange);
     $('#mc_preview_lines').off('change' + ns).on('change' + ns, handlePreviewLinesChange);
 
+    $('#mc_auto_collapse_hidden').off('change' + ns).on('change' + ns, handleAutoCollapseHiddenChange);
     $('#mc_auto_collapse_by_length').off('change' + ns).on('change' + ns, handleAutoCollapseByLengthChange);
     $('#mc_length_threshold').off('change' + ns).on('change' + ns, handleLengthThresholdChange);
 

@@ -7,6 +7,7 @@
     "mc.settings.previewLinesOption": "Показать превью строк",
     "mc.settings.previewLinesLabel": "Строк превью:",
     "mc.settings.autoSection": "Автоматика",
+    "mc.settings.autoHidden": "Сворачивать скрытые из промпта автоматически",
     "mc.settings.autoLength": "Свернуть, если длиннее",
     "mc.settings.autoAge": "Свернуть, если старше",
     "mc.settings.charsSuffix": "символов",

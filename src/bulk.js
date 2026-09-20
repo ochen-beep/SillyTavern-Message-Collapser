@@ -35,6 +35,24 @@ function setHiddenMessagesCollapsed(collapsed) {
     $hidden.each(function () {
         applyCollapsedState($(this), ensureArrow($(this)), collapsed);
     });
+
+    // While the auto-hidden rule is on, the pipeline collapses these on the
+    // next pass anyway and the action stays a temporary view — persisting
+    // would silently resurface as manual state for anyone who later turns
+    // the rule off. With the rule off hidden messages are fully manual, so
+    // persist like the sender groups do or the next render reverts the action.
+    if (!getSettings().autoCollapseHidden) {
+        const chatId = getCurrentChatId();
+        const keys = [];
+        $hidden.each(function () {
+            const key = getStableMessageKey(this);
+            if (key) keys.push(key);
+        });
+        if (chatId && keys.length > 0 && setMessagesBulkToggleInState(getSettings(), chatId, keys, collapsed)) {
+            saveSettings();
+        }
+    }
+
     toastr.success(tr('{count} hidden message collapsed.|{count} hidden messages collapsed.', 'mc.toast.hiddenCollapsed', { count: $hidden.length }));
 }
 
@@ -144,11 +162,13 @@ export function handleCollapseAllClick() {
             applyCollapsedState($message, ensureArrow($message), true);
             changed++;
         }
-        // After the action every message is collapsed. Persist only the
-        // manual state by stable key; is_system messages stay out of the map —
-        // they are collapsed by their own flag and expanded via the eye icon,
-        // and duplicating them here would diverge from Expand All semantics.
-        if (!isMessageHiddenFromPrompt(this)) {
+        // After the action every message is collapsed. Persist manual state
+        // by stable key. is_system messages join the map only while the
+        // auto-hidden rule is off (they are fully manual then — leaving them
+        // out would reopen them on the next render while everything else
+        // stays collapsed); with the rule on they are collapsed by the rule
+        // itself and stay out of the map.
+        if (!isMessageHiddenFromPrompt(this) || !getSettings().autoCollapseHidden) {
             const key = getStableMessageKey(this);
             if (key) collapsedMap[key] = true;
         }

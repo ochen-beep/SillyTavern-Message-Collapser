@@ -114,13 +114,20 @@ function shouldAutoCollapse(mesElement) {
 }
 
 // Decision for a single message. Priority:
-// 1. Messages excluded from the prompt (is_system) — always collapsed.
+// 1. Messages excluded from the prompt (is_system) — collapsed while the
+//    auto-hidden rule is on (the eye icon governs; manual states are ignored).
+//    With the rule off they are fully manual: only a persisted manual collapse
+//    applies, and even the length/age rules are skipped — hidden messages are
+//    usually long, so the length rule would silently re-collapse them.
 // 2. Manually collapsed — collapsed.
 // 3. Manually expanded — expanded (overrides auto-collapse).
 // 4. Auto-collapse rules.
 function shouldCollapseMessage(mesElement, chatId) {
     const key = getStableMessageKey(mesElement);
-    if (isMessageHiddenFromPrompt(mesElement)) return true;
+    if (isMessageHiddenFromPrompt(mesElement)) {
+        if (getSettings().autoCollapseHidden) return true;
+        return !!chatId && isManuallyCollapsed(chatId, key);
+    }
     if (!!chatId && isManuallyCollapsed(chatId, key)) return true;
     if (!!chatId && isManuallyExpanded(chatId, key)) return false;
     return shouldAutoCollapse(mesElement);

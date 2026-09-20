@@ -13,6 +13,7 @@ export const defaultSettings = Object.freeze({
     manuallyExpandedMessages: {},
     previewMode: 'hide',        // 'hide' | 'preview'
     previewLines: 2,
+    autoCollapseHidden: true,   // off = prompt-hidden messages are fully manual (no auto rule touches them)
     autoCollapseByLength: false,
     lengthThreshold: 1000,
     autoCollapseByAge: false,
